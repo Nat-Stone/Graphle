@@ -1,0 +1,1718 @@
+<!DOCTYPE html>
+<html>
+    <title>Graphle</title>
+    <body>
+        <style>
+            body {
+                position: absolute;
+                margin: 0;
+                height: 100%;
+                width: 100%;
+                outline: 4px solid;
+                outline-offset: -4px;
+            }
+            
+            .graph {
+                position: absolute;
+                display: block;
+                outline: 4px solid;
+                outline-offset: -4px;
+                left: 33.25vh;
+                top: 0px;
+                height: 100vh;
+            }
+            
+            .box {
+                position: absolute;
+                margin: 0px;
+                outline: 4px solid;
+                outline-offset: -2px;
+                left: 2px;
+                width: 33vh;
+            }
+            
+            .left_box {
+                position: absolute;
+                margin: 0px;
+                outline: 4px solid;
+                outline-offset: -2px;
+                left: 2px;
+                width: 16.5vh;
+            }
+            
+            .right_box {
+                position: absolute;
+                margin: 0px;
+                outline: 4px solid;
+                outline-offset: -2px;
+                width: 16.5vh;
+            }
+            
+            .func {
+                display: none;
+                height: 8.3vh;
+            }
+            
+            .info {
+                display: none;
+                text-align: center;
+                height: 4.7vh;
+                padding-top: 1.8vh;
+                font-size: 3vh;
+            }
+            
+            .title {
+                text-align: center;
+                display: block;
+                font-size: 7vh;
+                height: 12vh;
+                padding-top: 3vh;
+                top: 2px;
+            }
+            
+            .play {
+                text-align: center;
+                top: 15vh;
+                height: 14vh;
+                padding-top: 6vh;
+                font-size: 8vh;
+            }
+            
+            .guesses {
+                display: none;
+                text-align: center;
+                top: 85vh;
+                height: 4.5vh;
+                padding-top: 2vh;
+                font-size: 2.7vh;
+            }
+            
+            .mode {
+                text-align: center;
+                top: 35vh;
+                height: 7.5vh;
+                padding-top: 2.5vh;
+                font-size: 5vh;
+            }
+            
+            .settings_title {
+                display: none;
+                text-align: center;
+                top: 45vh;
+                height: 9.5vh;
+                padding-top: 1.5vh;
+                font-size: 6vh;
+            }
+            
+            .info_guesses {
+                top: 15.1vh;
+            }
+            
+            .info_pos {
+                top: 21.7vh;
+            }
+            
+            .info_settings {
+                top: 28.3vh;
+            }
+            
+            .pos_div {
+                display: none;
+                top: 35vh;
+                height: 65vh;
+                overflow: scroll;
+            }
+            
+            .pos {
+                position: absolute;
+                width: 33vh;
+            }
+            
+            .settings_text {
+                position: relative;
+                text-align: center;
+                top: 10%;
+                font-size: 4vh;
+            }
+            
+            .settings_text_small {
+                position: relative;
+                text-align: center;
+                top: 6%;
+                font-size: 2.3vh;
+            }
+            
+            .slider {
+                position: absolute;
+                left: 15%;
+                top: 60%;
+                width: 70%;
+                height: 20%;
+            }
+            
+            .number {
+                position: absolute;
+                text-align: center;
+                left: 35%;
+                top: 60%;
+                width: 30%;
+                height: 20%;
+            }
+            
+            .dif {
+                top: 45vh;
+                height: 11vh;
+            }
+            
+            .flip {
+                top: 56vh;
+                height: 11vh;
+            }
+            
+            .translate {
+                top: 67vh;
+                height: 11vh;
+            }
+            
+            .dilate_num {
+                top: 78vh;
+                height: 11vh;
+            }
+            
+            .dilate_den {
+                top: 89vh;
+                height: 11vh;
+            }
+        </style>
+        
+        <canvas id="graph" class="graph"></canvas>
+        
+        <canvas id="box0" class="box func"></canvas>
+        <canvas id="box1" class="box func"></canvas>
+        <canvas id="box2" class="box func"></canvas>
+        <canvas id="box3" class="box func"></canvas>
+        <canvas id="box4" class="box func"></canvas>
+        <canvas id="box5" class="box func"></canvas>
+        <canvas id="answer" class="box func"></canvas>
+        
+        <div id="title" class="box title"><b>Nerderle</b></div>
+        <div id="play" class="box play hover">Play</div>
+        <div id="guesses" class="box guesses"></div>
+        <div id="mode" class="box mode settings hover">Mode: Daily</div>
+        <div id="settings_title" class="box settings_title">Settings:</div>
+        <div id="info_guesses" class="box info info_guesses hover">Guesses</div>
+        <div id="info_pos" class="box info info_pos hover">Possibilities</div>
+        <div id="info_settings" class="box info info_settings hover">Settings</div>
+        
+        <div id="pos_div" class="box pos_div">
+            <canvas id="pos" class="pos"></canvas>
+        </div>
+        
+        <div id="dif" class="box settings dif">
+            <div id="dif_text" class="settings_text">Difficulty:</div>
+            <input id="dif_input" class="slider" type="range" min="0" max="3" value="1">
+        </div>
+        
+        <div id="fx" class="left_box settings flip">
+            <div id="fx_text" class="settings_text">Flip X:</div>
+            <input id="fx_input" class="number" type="checkbox" disabled>
+        </div>
+        <div id="fy" class="right_box settings flip">
+            <div id="fy_text" class="settings_text">Flip Y:</div>
+            <input id="fy_input" class="number" type="checkbox" disabled>
+        </div>
+        
+        <div id="dx" class="left_box settings translate">
+            <div id="dx_text" class="settings_text_small">Max<br>Translate X:</div>
+            <input id="dx_input" class="number" type="number" min="0" max="5" value="0" disabled>
+        </div>
+        <div id="dy" class="right_box settings translate">
+            <div id="dy_text" class="settings_text_small">Max<br>Translate Y:</div>
+            <input id="dy_input" class="number" type="number" min="0" max="5" value="0" disabled>
+        </div>
+        
+        <div id="sxn" class="left_box settings dilate_num">
+            <div id="sxn_text" class="settings_text_small">Max Dilate X (Numerator):</div>
+            <input id="sxn_input" class="number" type="number" min="1" max="5" value="1" disabled>
+        </div>
+        <div id="syn" class="right_box settings dilate_num">
+            <div id="syn_text" class="settings_text_small">Max Dilate Y (Numerator):</div>
+            <input id="syn_input" class="number" type="number" min="1" max="5" value="1" disabled>
+        </div>
+        
+        <div id="sxd" class="left_box settings dilate_den">
+            <div id="sxd_text" class="settings_text_small">Max Dilate X (Denominator):</div>
+            <input id="sxd_input" class="number" type="number" min="1" max="5" value="1" disabled>
+        </div>
+        <div id="syd" class="right_box settings dilate_den">
+            <div id="syd_text" class="settings_text_small">Max Dilate Y (Denominator):</div>
+            <input id="syd_input" class="number" type="number" min="1" max="5" value="1" disabled>
+        </div>
+        
+        <script>
+          for (let e of document.getElementsByClassName("right_box")) {
+    e.style.left = 2 + window.innerHeight * 0.165 + "px";
+}
+
+const totalBoxes = 7;
+const boxes = [];
+const contexts = [];
+const rawTexts = [];
+var rawAnswer = "";
+var info = "menu";
+
+let mode = 0;
+
+for (let n = 0; n < totalBoxes - 1; n++) {
+    let box = document.getElementById("box" + n);
+    boxes.push(box);
+    contexts.push(box.getContext("2d"));
+    rawTexts.push("");
+    
+    box.style.top = window.innerHeight - (totalBoxes - n + 1) * window.innerHeight / 12 + window.innerHeight / 60 - 1 + "px";
+    box.width = window.innerHeight / 3;
+    box.height = window.innerHeight / 12;
+}
+
+var answer = document.getElementById("answer");
+boxes.push(answer);
+contexts.push(answer.getContext("2d"));
+rawTexts.push("");
+answer.style.top = "91.6%";
+answer.width = window.innerHeight / 3;
+answer.height = window.innerHeight / 12;
+
+var play = document.getElementById("play");
+play.style.display = "block";
+var guesses = document.getElementById("guesses");
+var settings_title = document.getElementById("settings_title");
+
+const settings = {};
+for (let s of document.getElementsByClassName("settings")) {
+    settings[s.id] = s;
+}
+
+const transform = {};
+for (let s of document.getElementsByClassName("number")) {
+    transform[s.id] = s;
+    
+    s.onchange = function() {
+        this.value = Math.max(this.min, Math.min(this.max, this.value));
+    }
+}
+
+const infos = {};
+for (let s of document.getElementsByClassName("info")) {
+    infos[s.id] = s;
+}
+
+const colors = ["#df1f1f", "#df9f1f", "#cfcf1f", "#1fdf1f", "#1f1fdf", "#cf1fcf", "#000000"];
+
+const graphArea = document.getElementById("graph");
+const ctxGraph = graphArea.getContext("2d");
+graphArea.width = window.innerWidth - window.innerHeight / 3 + 1;
+graphArea.height = window.innerHeight;
+
+
+var boxNum = 0;
+var cursor = 0;
+var result;
+
+const special = ["\\)/\\(", "\\/(", "\\^(", "\\(", "\\)"];
+const numbers = "1234567890.".split("");
+const letters = "qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNπ".split("");
+const symbols = "()+-*/^=".split("");//no !
+const constants = {"π": Math.PI, "e": Math.E};
+const functions = {
+    "sqrt": Math.sqrt,
+    "cbrt": Math.cbrt,
+    "ln": (x) => (x > 0) ? Math.log(x):Number.NEGATIVE_INFINITY,
+    "log": (x) => (x > 0) ? Math.log10(x):Number.NEGATIVE_INFINITY,
+    "sin": Math.sin,
+    "cos": Math.cos,
+    "tan": (x) => (-Math.PI / 2 < x && x < Math.PI / 2) ? Math.tan(x):(Math.sign(x) * Number.POSITIVE_INFINITY),
+    "sec": (x) => (-Math.PI / 2 < x && x < Math.PI / 2) ? 1 / Math.cos(x):Number.POSITIVE_INFINITY,
+    "csc": (x) => (0 < x && x < Math.PI) ? 1 / Math.sin(x):Number.POSITIVE_INFINITY,
+    "cot": (x) => (0 < x && x < Math.PI) ? Math.cos(x) / Math.sin(x):(Math.sign(x) * Number.NEGATIVE_INFINITY),
+    "sinh": Math.sinh,
+    "cosh": Math.cosh
+};
+const strings = [...Object.keys(constants), ...Object.keys(functions)];
+strings.sort((a, b) => b.length - a.length);
+
+const posFuncs = [
+    "x",
+    "x\\^(2\\)",
+    "x\\^(3\\)",
+    "\\/(1\\)/\\(x\\)",
+    "\\/(1\\)/\\(x\\^(2\\)\\)",
+    "sqrt(x)",
+    "cbrt(x)",
+    "e\\^(x\\)",
+    "10\\^(x\\)",
+    "ln(x)",
+    "log(x)",
+    "x\\^(x\\)",
+    "x\\^(\\/(1\\)/\\(x\\)\\)",
+    "sin(x)",
+    "cos(x)",
+    "tan(x)",
+    "sec(x)",
+    "csc(x)",
+    "cot(x)",
+    "cosh(x)",
+    "sinh(x)",
+    "sqrt(1-x\\^(2\\))",
+    "sqrt(x\\^(2\\)+1)",
+    "sqrt(x\\^(2\\)-1)",
+    "e\\^(-x\\^(2\\)\\)",
+    "\\/(1\\)/\\(1+e\\^(-x\\)\\)"
+];
+const posFuncFuncs = [];
+for (let f of posFuncs) {
+    posFuncFuncs.push(getFunc(f));
+}
+
+var posDiv = document.getElementById("pos_div");
+var posArea = document.getElementById("pos");
+var ctxPos = posArea.getContext("2d");
+posArea.height = window.innerHeight / 12 * Math.ceil(posFuncs.length / 2);
+drawPos();
+
+setTransform();
+
+for (let s of document.getElementsByClassName("hover")) {
+    s.onmouseover = function() {
+        s.style.backgroundColor = "lightgrey";
+    }
+    
+    s.onmouseout = function() {
+        s.style.backgroundColor = "transparent";
+    }
+}
+
+settings.mode.onmouseover = function() {
+    if (info == "menu") {
+        settings.mode.style.backgroundColor = "lightgrey";
+    }
+}
+
+play.onmousedown = function() {
+    for (let n = 0; n < totalBoxes; n++) {
+        rawTexts[n] = "";
+    }
+    
+    boxNum = 0;
+    cursor = 0;
+    result = undefined;
+    
+    setGuesses();
+    for (let n = 0; n < totalBoxes; n++) {
+        showBox(n);
+    }
+    showGraph(true);
+    
+    switch (play.innerHTML) {
+        case "Play":
+            info = "guesses";
+            
+            if (mode == 0) {
+                rawAnswer = getRandomFunc(
+                    transform.fx_input.checked,
+                    transform.fy_input.checked,
+                    transform.dx_input.value,
+                    transform.dy_input.value,
+                    transform.sxn_input.value,
+                    transform.syn_input.value,
+                    transform.sxd_input.value,
+                    transform.syd_input.value,
+                    getDailySeed(Math.E ** (document.getElementById("dif_input").value / 2 + 1))
+                );
+            } else {
+                rawAnswer = getRandomFunc(
+                    transform.fx_input.checked,
+                    transform.fy_input.checked,
+                    transform.dx_input.value,
+                    transform.dy_input.value,
+                    transform.sxn_input.value,
+                    transform.syn_input.value,
+                    transform.sxd_input.value,
+                    transform.syd_input.value
+                );
+            }
+            
+            rawTexts[totalBoxes - 1] = rawAnswer;
+                    
+            play.style.display = "none";
+            settings_title.style.display = "none";
+            for (let s of Object.values(settings)) {
+                s.style.display = "none";
+            }
+            for (let b of boxes) {
+                b.style.display = "block";
+            }
+            guesses.style.display = "block";
+            for (let s of Object.values(infos)) {
+                s.style.display = "block";
+            }
+            document.getElementById("dif_input").disabled = true;
+            for (let s of Object.values(transform)) {
+                s.disabled = true;
+            }
+            break;
+        case "Menu":
+            info = "menu";
+            play.innerHTML = "Play";
+            
+            for (let b of boxes) {
+                b.style.display = "none";
+            }
+            guesses.style.display = "none";
+            for (let s of Object.values(infos)) {
+                s.style.display = "none";
+            }
+            for (let s of Object.values(settings)) {
+                s.style.display = "block";
+            }
+            document.getElementById("dif_input").disabled = false;
+            if (mode == 2) {
+                settings.dif.style.display = "none";
+                settings_title.style.display = "block";
+                for (let s of Object.values(transform)) {
+                    s.disabled = false;
+                }
+            }
+            break;
+    }
+}
+
+settings.mode.onmousedown = function() {
+    if (info == "menu") {
+        mode = (mode + 1) % 3;
+        switch (mode) {
+            case 0:
+                settings.mode.innerHTML = "Mode: Daily";
+                settings.dif.style.display = "block";
+                settings_title.style.display = "none";
+                for (let s of Object.values(transform)) {
+                    s.disabled = true;
+                }
+                break;
+            case 1:
+                settings.mode.innerHTML = "Mode: Infinite";
+                break;
+            case 2:
+                settings.mode.innerHTML = "Mode: Custom";
+                settings.dif.style.display = "none";
+                settings_title.style.display = "block";
+                for (let s of Object.values(transform)) {
+                    s.disabled = false;
+                }
+                break;
+        }
+    }
+}
+
+infos.info_guesses.onmousedown = function() {
+    switch (info) {
+        case "pos":
+            posDiv.style.display = "none";
+            break;
+        case "settings":
+            for (let s of Object.values(settings)) {
+                s.style.display = "none";
+            }
+            settings_title.style.display = "none";
+            break;
+    }
+    info = "guesses";
+    for (let b of boxes) {
+        b.style.display = "block";
+    }
+    guesses.style.display = "block";
+}
+
+infos.info_pos.onmousedown = function() {
+    switch (info) {
+        case "guesses":
+            for (let b of boxes) {
+                b.style.display = "none";
+            }
+            guesses.style.display = "none";
+            break;
+        case "settings":
+            for (let s of Object.values(settings)) {
+                s.style.display = "none";
+            }
+            settings_title.style.display = "none";
+            break;
+    }
+    info = "pos";
+    posDiv.style.display = "block";
+}
+
+infos.info_settings.onmousedown = function() {
+    switch (info) {
+        case "guesses":
+            for (let b of boxes) {
+                b.style.display = "none";
+            }
+            guesses.style.display = "none";
+            break;
+        case "pos":
+            posDiv.style.display = "none";
+            break;
+    }
+    info = "settings";
+    for (let s of Object.values(settings)) {
+        s.style.display = "block";
+    }
+    if (mode == 2) {
+        settings.dif.style.display = "none";
+        settings_title.style.display = "block";
+    }
+}
+
+function setTransform() {
+    switch (document.getElementById("dif_input").value) {
+        case "0":
+            transform.fx_input.checked = false;
+            transform.fy_input.checked = false;
+            transform.dx_input.value = 0;
+            transform.dy_input.value = 0;
+            transform.sxn_input.value = 1;
+            transform.syn_input.value = 1;
+            transform.sxd_input.value = 1;
+            transform.syd_input.value = 1;
+            break;
+        case "1":
+            transform.fx_input.checked = true;
+            transform.fy_input.checked = true;
+            transform.dx_input.value = 0;
+            transform.dy_input.value = 0;
+            transform.sxn_input.value = 1;
+            transform.syn_input.value = 1;
+            transform.sxd_input.value = 1;
+            transform.syd_input.value = 1;
+            break;
+        case "2":
+            transform.fx_input.checked = true;
+            transform.fy_input.checked = true;
+            transform.dx_input.value = 1;
+            transform.dy_input.value = 1;
+            transform.sxn_input.value = 2;
+            transform.syn_input.value = 2;
+            transform.sxd_input.value = 2;
+            transform.syd_input.value = 2;
+            break;
+        case "3":
+            transform.fx_input.checked = true;
+            transform.fy_input.checked = true;
+            transform.dx_input.value = 5;
+            transform.dy_input.value = 5;
+            transform.sxn_input.value = 3;
+            transform.syn_input.value = 3;
+            transform.sxd_input.value = 3;
+            transform.syd_input.value = 3;
+            break;
+    }
+}
+
+settings.dif.onchange = () => setTransform();
+
+function getDailySeed(s1) {
+    let s2 = Math.sqrt(Math.PI * Math.floor(new Date().getTime() / 86400000)) % 1;
+    return (s1 * ((s2 + Math.sqrt(3))) ** (Math.E ** 2 * (s2 + Math.sqrt(3.1)))) % 1;
+}
+
+function modRandom(seed, k) {
+    return (seed % (1 / k)) * k;
+}
+
+function getRandomFunc(fx = false, fy = false, dx = 0, dy = 0, sxn = 1, syn = 1, sxd = undefined, syd = undefined, seed = undefined) {
+    if (sxd == undefined) {
+        sxd = sxn;
+    }
+    if (syd == undefined) {
+        syd = syn;
+    }
+    if (seed == undefined) {
+        seed = Math.random();
+    }
+    let curSeed = seed;
+    
+    let xString = "x";
+    
+    let func = posFuncs[Math.floor(seed * posFuncs.length)];
+    curSeed = modRandom(curSeed, posFuncs.length);
+    
+    if (sxn != 1 || sxd != 1 || fx) {
+        let coef1 = Math.floor(curSeed * sxn) + 1;
+        curSeed = modRandom(curSeed, sxn);
+        let coef2 = Math.floor(curSeed * sxd) + 1;
+        curSeed = modRandom(curSeed, sxd);
+        for (let n = Math.min(coef1, coef2); n > 0; n--) {
+            if (coef1 % n == 0 && coef2 % n == 0) {
+                coef1 /= n;
+                coef2 /= n;
+                break;
+            }
+        }
+        if (fx && curSeed < 1/2) {
+            coef1 *= -1;
+        }
+        curSeed = modRandom(curSeed, 2);
+        if (coef1 != coef2) {
+            if (coef1 == -coef2) {
+                xString = "-" + xString;
+            } else if (coef1 != 1 && coef2 == 1) {
+                xString = coef1 + xString;
+            } else if (coef2 != 1) {
+                xString = "\\/(" + coef1 + "\\)/\\(" + coef2 + "\\)" + xString;
+            }
+        }
+    }
+    
+    if (syn != 1 || syd != 1 || fy) {
+        let coef1 = Math.floor(curSeed * syn) + 1;
+        curSeed = modRandom(curSeed, syn);
+        let coef2 = Math.floor(curSeed * syd) + 1;
+        curSeed = modRandom(curSeed, syd);
+        for (let n = Math.min(coef1, coef2); n > 0; n--) {
+            if (coef1 % n == 0 && coef2 % n == 0) {
+                coef1 /= n;
+                coef2 /= n;
+                break;
+            }
+        }
+        if (fy && curSeed < 1/2) {
+            coef1 *= -1;
+        }
+        curSeed = modRandom(curSeed, 2);
+        if (coef1 != coef2) {
+            if (coef1 == -coef2) {
+                func = "-" + func;
+            } else if (coef1 != 1 && coef2 == 1) {
+                func = coef1 + "*" + func;
+            } else if (coef2 != 1) {
+                func = "\\/(" + coef1 + "\\)/\\(" + coef2 + "\\)*" + func;
+            }
+        }
+    }
+    
+    if (dx != 0) {
+        let d = Math.floor(curSeed * (dx * 2 + 1)) - dx;
+        curSeed = modRandom(curSeed, dx * 2 + 1);
+        if (d != 0) {
+            if (xString == "x") {
+                xString += "+" + d;
+            } else {
+                xString = xString.slice(0, -1) + "(x-" + d + ")";
+            }
+        }
+    }
+    
+    if (dy != 0) {
+        let d = Math.floor(curSeed * (dy * 2 + 1)) - dy;
+        curSeed = modRandom(curSeed, dy * 2 + 1);
+        if (d != 0) {
+            func += "-" + d;
+        }
+    }
+    
+    for (let ind = func.lastIndexOf("*"); ind >= 0; ind = func.lastIndexOf("*", ind - 1)) {
+        if (func[ind+1] != "-" && !numbers.includes(func[ind+1])) {
+            func = func.slice(0, ind) + func.slice(ind+1);
+            ind -= 1;
+        }
+        if (ind == 0) {
+            break;
+        }
+    }
+    
+    for (let ind = func.lastIndexOf("x"); ind >= 0; ind = func.lastIndexOf("x", ind - 1)) {
+        if ((func[ind + 2] == "^" || (ind != 0 && xString[0] == "-")) && xString != "x") {
+            func = func.slice(0, ind) + "(" + xString + ")" + func.slice(ind + 1);
+        } else {
+            func = func.slice(0, ind) + xString + func.slice(ind + 1);
+        }
+        if (ind == 0) {
+            break;
+        }
+    }
+    
+    func = func.replaceAll("+-", "-");
+    func = func.replaceAll("--", "+");
+    
+    if (func[0] == "+") {
+        func = func.slice(1);
+    }
+    
+    return func;
+}
+
+function drawPos() {
+    ctxPos.clearRect(0, 0, posArea.width, posArea.height);
+    
+    let width = posArea.width / 2;
+    let height = posArea.height / Math.ceil(posFuncs.length / 2);
+    
+    ctxPos.beginPath();
+    ctxPos.moveTo(posArea.width / 2, 0);
+    ctxPos.lineTo(posArea.width / 2, posArea.height);
+    
+    for (let n = 1; n < posFuncs.length / 2; n++) {
+        ctxPos.moveTo(0, height * n);
+        ctxPos.lineTo(posArea.width, height * n);
+    }
+    
+    ctxPos.strokeStyle = "black";
+    ctxPos.lineWidth = 4;
+    ctxPos.stroke();
+    
+    for (let f in posFuncs) {
+        let widthFactor = showText(ctxPos, posFuncs[f], -1, false, 0, 0, 100) / 100;
+        showText(ctxPos, posFuncs[f], -1, true, width * (f % 2 + 1/2) - Math.min(height * 2 / 3 * widthFactor, (width - height / 3)) / 2, height * (Math.floor(f / 2) + 1/2), Math.min(height * 2 / 3, (width - height / 3) / widthFactor));
+    }
+}
+
+function findOpen(text, cursor) {
+    let open = 0;
+    let ind = cursor - 1;
+    for ( ; ind >= 0; ind--) {
+        switch (text[ind]) {
+            case "(":
+                open += 1;
+                break;
+            case  ")":
+                open -= 1;
+                break;
+        }
+        if (open == 1) {
+            break;
+        }
+    }
+    return ind;
+}
+
+function findClose(text, cursor) {
+    let close = 0;
+    let ind = cursor;
+    for ( ; ind < text.length; ind++) {
+        switch (text[ind]) {
+            case ")":
+                close += 1;
+                break;
+            case  "(":
+                close -= 1;
+                break;
+        }
+        if (close == 1) {
+            break;
+        }
+    }
+    return ind;
+}
+
+function lastBreak(text, chars, cursor) {
+    let ind = cursor - 1;
+    let open = 0;
+    for ( ; ind >= 0; ind--) {
+        switch (text[ind]) {
+            case "(":
+                open += 1;
+                break;
+            case ")":
+                open -= 1;
+                break;
+            default:
+                if (chars.includes(text[ind]) && open == 0) {
+                    return ind;;
+                }
+        }
+        
+        if (open > 0) {
+            return ind;
+        }
+    }
+    return ind;
+}
+
+function lastChar(text, cursor) {
+    for (let s of special) {
+        if (s == text.slice(cursor - s.length, cursor)) {
+            return s;
+        }
+    }
+    return text[cursor - 1];
+}
+
+function nextChar(text, cursor) {
+    for (let s of special) {
+        if (s == text.slice(cursor, cursor + s.length)) {
+            return s;
+        }
+    }
+    return text[cursor];
+}
+
+function showText(ctxBox, text, cursor, show, x1, y1, size1) {
+    ctxBox.textAlign = "left";
+    ctxBox.textBaseline = "middle";
+    ctxBox.fillStyle = "black";
+    ctxBox.strokeStyle = "black";
+    ctxBox.font = size1 + "px Arial";
+    
+    let textX = x1;
+    let textY = y1;
+    let textSize = size1;
+    let open = [];
+    let char;
+    
+    let inFrac = false;
+    let fracStart;
+    let topFracString = "";
+    let bottomFracString = "";
+    
+    for (let ind = 0; ind <= text.length; ind += char.length) {
+        if (show && !inFrac && ind == cursor) {
+            ctxBox.lineWidth = textSize / 20;
+            ctxBox.beginPath();
+            ctxBox.moveTo(textX - textSize / 80, textY - textSize / 2);
+            ctxBox.lineTo(textX - textSize / 80, textY + textSize / 2);
+            ctxBox.stroke();;
+        }
+        
+        char = nextChar(text, ind);
+        
+        if (char == undefined) {
+            break;
+        } else {
+            if (inFrac && !((char == "\\/(" && !open.includes("\\/(") && !open.includes("\\)/\\(")) || ((char == "\\)/\\(" || char == "\\)") && !open.slice(0, -1).includes("\\/(") && !open.slice(0, -1).includes("\\)/\\(")))) {
+                if (open.includes("\\/(") && open.includes("\\)/\\(")) {
+                    if (open.indexOf("\\/(") < open.indexOf("\\)/\\(")) {
+                        topFracString += char;
+                    } else {
+                        bottomFracString += char;
+                    }
+                } else if (open.includes("\\/(")) {
+                    topFracString += char;
+                } else if (open.includes("\\)/\\(")) {
+                    bottomFracString += char;
+                }
+            }
+            
+            switch (char) {
+                case "\\(":
+                    break;
+                case "\\)/\\(":
+                    if (!open.includes("\\)/\\(") && open.indexOf("\\/(") == open.length - 1) {
+                        bottomFracString = "";
+                    }
+                    open.pop();
+                    open.push(char);
+                    break;
+                case "\\/(":
+                    textSize /= 9 / 4;
+                    ctxBox.font = textSize + "px Arial";
+                    if (!inFrac) {
+                        topFracString = "";
+                        fracStart = textX + textSize / 8;
+                        inFrac = true;
+                    }
+                    open.push(char);
+                    break;
+                case "\\^(":
+                    textSize /= 2;
+                    textY -= textSize * 3 / 8;
+                    ctxBox.font = textSize + "px Arial";
+                    open.push(char);
+                    break;
+                case "\\)":
+                    switch (open.at(-1)) {
+                        case "\\)/\\(":
+                            let size = textSize * 9 / 4;
+                            let topWidth = showText(ctxBox, topFracString, 0, false, 0, 0, size / 9 * 4);
+                            let bottomWidth = showText(ctxBox, bottomFracString, 0, false, 0, 0, size / 9 * 4);
+                            let width = Math.max(topWidth, bottomWidth) + size / 4;
+                            
+                            if ((char == "\\)/\\(" || char == "\\)") && !open.slice(0, -1).includes("\\/(") && !open.slice(0, -1).includes("\\)/\\(")) {
+                                if (show) {
+                                    ctxBox.lineWidth = size / 10;
+                                    ctxBox.beginPath();
+                                    ctxBox.moveTo(fracStart, textY);
+                                    ctxBox.lineTo(fracStart + width, textY);
+                                    ctxBox.stroke();
+                                    showText(ctxBox, topFracString, cursor - ind + topFracString.length + bottomFracString.length + 5, true, fracStart + width / 2 - topWidth / 2, textY - size / 3, size * 4 / 9);
+                                    showText(ctxBox, bottomFracString, cursor - ind + bottomFracString.length, true, fracStart + width / 2 - bottomWidth / 2, textY + size / 3, size * 4 / 9);
+                                }
+                                
+                                inFrac = false;
+                            }
+                                
+                            textX = fracStart + width + textSize / 8;
+                            textSize = size;
+                            ctxBox.font = textSize + "px Arial";
+                            break;
+                        case "\\^(":
+                            textSize *= 2;
+                            textY += textSize / 4;
+                            ctxBox.font = textSize + "px Arial";
+                            break;
+                    }
+                    open.pop();
+                    break;
+                default:
+                    if (show && !inFrac) {
+                        ctxBox.fillText(char, textX, textY);
+                    }
+                    if (ind < text.length) {
+                        textX += ctxBox.measureText(char).width + textSize / 40;
+                    }
+            }
+        }
+    }
+    
+    return textX;
+}
+
+function showBox(n) {
+    contexts[n].clearRect(0, 0, boxes[n].width, boxes[n].height);
+                    
+    let widthFactor = showText(contexts[n], rawTexts[n], -1, false, 0, 0, 100) / 100;
+    showText(contexts[n], (n < totalBoxes - 1 || result != undefined) ? rawTexts[n]:"", (n == boxNum && result == undefined) ? cursor:-1, true, boxes[n].height / 6, boxes[n].height / 2, Math.min(boxes[n].height * 2 / 3, (boxes[n].width - boxes[n].height / 3) / widthFactor));
+}
+
+function tokenize(text) {
+    text = text.replaceAll("\\/", "");
+    text = text.replaceAll("\\", "");
+    
+    let tokens = [undefined];
+    let type = -1;
+    let string = "";
+    let open = 0;
+    let openFuncs = [];
+        
+    for (let char of text + "\\") {
+        let ptype = type;
+        if (numbers.includes(char)) {
+            type = 0;
+        } else if (letters.includes(char)) {
+            type = 1;
+        } else if (symbols.includes(char)) {
+            type = 2;
+        } else if (char == "\\") {
+            type = -1;
+        } else {
+            return undefined;
+        }
+        
+        if (type != ptype) {
+            switch (ptype) {
+                case 0:
+                    if (tokens.at(-1) == ")" || (typeof tokens.at(-1) == "string" && !symbols.includes(tokens.at(-1)))) {
+                        tokens.push("*");
+                        if (tokens.at(-1) != ")") {
+                            tokens.push("(");
+                            open += 1;
+                            openFuncs.push(open);
+                        }
+                    }
+                    if (string.at(-1) == "." || string.indexOf(".") != string.lastIndexOf(".")) {
+                        return undefined;
+                    } else {
+                        tokens.push(+string);
+                    }
+                    break;
+                case 1:
+                    if (tokens.at(-1) == ")" || typeof tokens.at(-1) == "number") {
+                        tokens.push("*");
+                    }
+                    let isFirst = true;
+                    while (string.length > 0) {
+                        if (!isFirst) {
+                            tokens.push("*");
+                            tokens.push("(");
+                            open += 1;
+                            openFuncs.push(open);
+                        }
+                        let found;
+                        for (let s of strings) {
+                            if (s == string.slice(0, s.length)) {
+                                found = s;
+                                break;
+                            }
+                        }
+                        if (found == undefined) {
+                            found = string[0];
+                        }
+                        tokens.push(found)
+                        string = string.slice(found.length);
+                        isFirst = false;
+                    }
+                    break;
+                case 2:
+                    if (string[0] == "(" && (typeof tokens.at(-1) == "string" && !symbols.includes(tokens.at(-1)))) {
+                        tokens.push("*");
+                        tokens.push("(");
+                        open += 1;
+                        openFuncs.push(open);
+                    } else if (string[0] == "(" && (typeof tokens.at(-1) == "number" || (typeof tokens.at(-1) == "string" && !symbols.includes(tokens.at(-1))))) {
+                        tokens.push("*");
+                    }
+                    for (let c of string) {
+                        if (c == "(" && tokens.at(-1) == ")") {
+                            tokens.push("*");
+                        }
+                        if (((tokens.at(-1) == ")" && c != "/") || (tokens.at(-1) != "(" && [")", "+", "-", "*"].includes(c))) && openFuncs.length > 0 && open == openFuncs.at(-1)) {
+                            tokens.push(")");
+                            open -= 1;
+                            openFuncs.pop();
+                        }
+                        tokens.push(c);
+                        
+                        switch (c) {
+                            case "(":
+                                open += 1;
+                                break;
+                            case ")":
+                                if (open <= 0) {
+                                    return undefined;
+                                }
+                                open -= 1;
+                                break;
+                        }
+                    }
+                    break;
+            }
+            string = "";
+        }
+        
+        string += char;
+    }
+    
+    for (let n in openFuncs) {
+        tokens.push(")");
+        open -= 1;
+    }
+    
+    tokens = tokens.slice(1);
+    
+    if (open != 0 || ["*", "/", "^"].includes(tokens[0]) || tokens.join(" ").includes("( )")) {
+        return undefined;
+    } else {
+        return tokens;
+    }
+}
+
+function evaluate(tokens, vars = {}) {
+    if (tokens == undefined) {
+        return undefined;
+    }
+    
+    vars = {...constants, ...vars};
+    let values = tokens.map((v) => (Object.keys(vars).includes(v)) ? vars[v]:v);
+    
+    //parenthesis
+    while (values.includes("(")) {
+        let ind1 = values.lastIndexOf("(");
+        let ind2 = values.indexOf(")", ind1);
+        values = [...values.slice(0, ind1), evaluate(values.slice(ind1+1, ind2)), ...values.slice(ind2+1)];
+    }
+    if (values.includes(undefined)) {
+        return undefined;
+    }
+    //fractions
+    while (values.includes("/")) {
+        let ind = values.indexOf("/");
+        if (ind > 0 && typeof values[ind-1] == "number" && typeof values[ind+1] == "number") {
+            values = [...values.slice(0, ind-1), values[ind-1] / values[ind+1], ...values.slice(ind+2)];
+        } else {
+            return undefined
+        }
+    }
+    //functions
+    for (let ind = values.length - 2; ind >= 0; ind--) {
+        if (Object.keys(functions).includes(values[ind])) {
+            if (values[ind+1] == "*") {
+                values = [...values.slice(0, ind), functions[values[ind]](values[ind+2]), ...values.slice(ind+3)];
+            } else {
+                values = [...values.slice(0, ind), functions[values[ind]](values[ind+1]), ...values.slice(ind+2)];
+            }
+        }
+    }
+    //exponents
+    while (values.includes("^")) {
+        let ind = values.indexOf("^");
+        if (ind > 0 && typeof values[ind-1] == "number" && typeof values[ind+1] == "number") {
+            values = [...values.slice(0, ind-1), values[ind-1] ** values[ind+1], ...values.slice(ind+2)];
+        } else {
+            return undefined;
+        }
+    }
+    //unary addition & subtraction
+    for (let ind = values.length - 2; ind >= 0; ind--) {
+        if ((values[ind] == "+" || values[ind] == "-") && (ind == 0 || typeof values[ind-1] != "number")) {
+            if (typeof values[ind+1] == "number") {
+                if (values[ind] == "+") {
+                    values = [...values.slice(0, ind), ...values.slice(ind+1)];
+                } else if (values[ind] == "-") {
+                    values = [...values.slice(0, ind), -values[ind+1], ...values.slice(ind + 2)];
+                }
+            } else {
+                return undefined;
+            }
+        }
+    }
+    //multiplication
+    while (values.includes("*")) {
+        let ind = values.indexOf("*");
+        if (ind > 0 && typeof values[ind-1] == "number" && typeof values[ind+1] == "number") {
+            values = [...values.slice(0, ind-1), values[ind-1] * values[ind+1], ...values.slice(ind+2)];
+        } else {
+            return undefined;
+        }
+    }
+    //binary addition & subtraction
+    while (values.includes("+") || values.includes("-")) {
+        let indAdd = values.indexOf("+");
+        let indSub = values.indexOf("-");
+        let ind;
+        if (indSub == -1 || (indAdd != -1 && indAdd < indSub)) {
+            ind = indAdd;
+        } else {
+            ind = indSub;
+        }
+        if (ind > 0 && typeof values[ind-1] == "number" && typeof values[ind+1] == "number") {
+            if (ind == indAdd) {
+                values = [...values.slice(0, ind-1), values[ind-1] + values[ind+1], ...values.slice(ind+2)];
+            } else {
+                values = [...values.slice(0, ind-1), values[ind-1] - values[ind+1], ...values.slice(ind+2)];
+            }
+        } else {
+            return undefined;
+        }
+    }
+    
+    return values[0];
+}
+
+function getFunc(text) {
+    let tokens = tokenize(text);
+    return (x) => evaluate(tokens, {"x": x});
+}
+
+
+var minX = -10;
+var maxX = 10;
+var minY = -graphArea.height / graphArea.width * 10;
+var maxY = graphArea.height / graphArea.width * 10;
+var inc = 10 ** -2;
+var incZero = 10 ** -1;
+var eps = 10 ** -5;
+var lineWidth = 0.15;
+var elements = [];
+
+graphArea.onwheel = function() {
+    let factor = Math.max(5 / maxX, Math.min(20 / maxX, 4 ** (-event.deltaY / graphArea.height)));
+    minX *= factor;
+    maxX *= factor;
+    minY *= factor;
+    maxY *= factor;
+    inc *= factor;
+    showGraph(false);
+};
+
+function Element(type, value, color) {
+    this.type = type;
+    this.value = value;
+    this.color = color;
+    
+    this.show = function() {
+        ctxGraph.lineWidth = lineWidth;
+        ctxGraph.strokeStyle = this.color;
+        switch (this.type) {
+            case "func":
+                graph(this.value);
+                break;
+            case "point":
+                point(...this.value);
+                break;
+        }
+    }
+}
+
+function inGraph(y) {
+    return minY - lineWidth <= y && y <= maxY + lineWidth;
+}
+
+function isDefined(y) {
+    return !isNaN(y) && y != Number.POSITIVE_INFINITY && y != Number.NEGATIVE_INFINITY;
+}
+
+function constrain(y) {
+    if (isDefined(y)) {
+        return Math.round(Math.min(maxY * 2 - minY, Math.max(minY * 2 - maxY, y)) * 10**3) / 10**3;
+    } else if (y > 0) {
+        return maxY * 2 - minY;
+    } else if (y < 0) {
+        return minY * 2 - maxY;
+    } else {
+        return undefined;
+    }
+}
+
+function graphTransform(x1, y1, dx, dy) {
+    ctxGraph.translate(x1, y1);
+    ctxGraph.scale(dx / (maxX - minX), -dy / (maxY - minY));
+    ctxGraph.translate(-minX, minY);
+}
+
+function axis() {
+    ctxGraph.lineWidth = 0.1;
+    
+    ctxGraph.strokeStyle = "#afafaf";
+    ctxGraph.beginPath();
+    for (let x = Math.floor(minX) + 1; x < Math.ceil(maxX); x++) {
+        ctxGraph.moveTo(x, minY);
+        ctxGraph.lineTo(x, maxY);
+    }
+    for (let y = Math.floor(minY) + 1; y < Math.ceil(maxY); y++) {
+        ctxGraph.moveTo(minX, y);
+        ctxGraph.lineTo(maxX, y);
+    }
+    ctxGraph.stroke();
+    
+    ctxGraph.strokeStyle = "#5f5f5f";
+    ctxGraph.beginPath();
+    ctxGraph.moveTo(0, minY);
+    ctxGraph.lineTo(0, maxY);
+    ctxGraph.moveTo(minX, 0);
+    ctxGraph.lineTo(maxX, 0);
+    ctxGraph.stroke();
+}
+
+function point(x, y) {
+    ctxGraph.beginPath();
+    ctxGraph.arc(x, y, 0.2, 0, Math.PI * 2);
+    ctxGraph.fill();
+}
+
+function graph(f) {
+    ctxGraph.beginPath();
+    let x = minX - lineWidth;
+    let y = constrain(f(x));
+    if (y != undefined) {
+        ctxGraph.moveTo(x, y);
+    }
+    let px = x;
+    let py = y;
+    for (let x = minX - lineWidth + inc; x < maxX + lineWidth; x += inc) {
+        y = constrain(f(x));
+        if (y != undefined) {
+            if (Math.abs(x - px) >= inc * 2 || Math.abs(y - py) >= (maxY - minY) * 1) {
+                ctxGraph.moveTo(x, y);
+            }
+            ctxGraph.lineTo(x, y);
+            px = x;
+        }
+        py = y;
+    }
+    ctxGraph.stroke();
+}
+
+function zeroes(f) {
+    let found = [];
+    
+    let py;
+    let pdy;
+    let valueSignChanges = [];
+    let derSignChanges = [];
+    
+    for (let x = -20 + incZero; x <= 20; x += incZero) {
+        let y = f(x);
+        let dy = y - py;
+        if ((isDefined(y) || isDefined(py)) && Math.sign(y) != Math.sign(py)) {
+            valueSignChanges.push(x);
+        } else if ((isDefined(dy) && isDefined(pdy)) && Math.sign(dy) != Math.sign(pdy)) {
+            derSignChanges.push(x);
+        }
+        py = y;
+        pdy = dy;
+    }
+    
+    for (let x1 of valueSignChanges) {
+        let x0 = x1 - incZero;
+        if (Math.abs(f(x0)) <= eps) {
+            found.push(x0);
+        }
+        if (Math.abs(f(x1)) <= eps) {
+            found.push(x1);
+        }
+        let midY = f((x0 + x1) / 2);
+        for (let n = 0; n < 50 && Math.abs(midY) > eps; n++) {
+            if (Math.sign(midY) == Math.sign(f(x1))) {
+                x1 = (x0 + x1) / 2;
+            } else {
+                x0 = (x0 + x1) / 2;
+            }
+            midY = f((x0 + x1) / 2);
+        }
+        if (Math.abs(midY) <= eps) {
+            found.push((x0 + x1) / 2);
+        }
+    }
+    
+    for (let x1 of derSignChanges) {
+        let x0 = x1 - incZero;
+        let midDY = f((x0 + x1) / 2) - f(x0);
+        let dY1 = f(x1) - f((x0 + x1) / 2);
+        for (let n = 0; n < 50 && Math.abs(midDY) > eps * (x1 - x0); n++) {
+            if (Math.sign(midDY) == Math.sign(dY1)) {
+                x1 = (x0 + x1) / 2;
+            } else {
+                x0 = (x0 + x1) / 2;
+            }
+            midDY = f((x0 + x1) / 2) - f(x0);
+            dY1 = f(x1) - f((x0 + x1) / 2);
+        }
+        if (Math.abs(midDY) <= eps * (x1 - x0) && Math.abs(f((x0 + x1) / 2)) <= Math.sqrt(eps)) {
+            found.push((x0 + x1) / 2);
+        }
+    }
+    
+    return found;
+}
+
+function setElements() {
+    let efuncs = [];
+    let epoints = [];
+    
+    for (let n = 0; n < boxNum || (n <= totalBoxes - 1 && result != undefined); n++) {
+        if (rawTexts[n] != "") {
+            let func = getFunc(rawTexts[n]);
+            efuncs.push(new Element("func", func, colors[n % totalBoxes]));
+            
+            if (n < boxNum && !(n == boxNum - 1 && result == true)) {
+                let func1 = getFunc(rawAnswer);
+                let dif = (x) => func(x) - func1(x);
+                for (let x of zeroes(dif)) {
+                    epoints.push(new Element("point", [x, func(x)], "#1f1f1f"));
+                }
+            }
+        }
+    }
+    
+    elements = [...efuncs, ...epoints];
+}
+
+function showGraph(reset) {
+    if (reset) {
+        setElements();
+    }
+    
+    ctxGraph.clearRect(0, 0, graphArea.width, graphArea.height);
+    graphTransform(0, 0, graphArea.width, graphArea.height);
+    axis();
+    
+    for (let e of elements) {
+        e.show();
+    }
+    
+    ctxGraph.resetTransform();
+}
+
+function validGraph(rawfunc) {
+    let func = getFunc(rawfunc);
+    
+    for (let t of rawTexts.slice(0, boxNum)) {
+        if (sameFunc(func, getFunc(t))) {
+            return false;
+        }
+    }
+    
+    let xVals = [];
+    let funcVals = [];
+    let x = 0;
+    let d;
+    while (xVals.length < 3) {
+        let y = func(x);
+        if (isDefined(y) && inGraph(y)) {
+            xVals.push(x);
+            funcVals.push(y);
+        }
+        if (d == undefined) {
+            if (x >= 0) {
+                x += 1;
+                if (x > 10) {
+                    x = -1;
+                }
+            } else {
+                x -= 1;
+                if (x < -10) {
+                    if (xVals.length == 0) {
+                        return false;
+                    } else {
+                        d = 1/2;
+                        x = xVals[0] + d;
+                    }
+                }
+            }
+        } else {
+            x -= d;
+            if (d > 0) {
+                d *= -1;
+            } else {
+                d /= -2;
+            }
+            x += d;
+        }
+    }
+    
+    let posdx = [];
+    for (let n = 0; n <= transform.dx_input.value; n++) {
+        posdx.push(n);
+        posdx.push(-n);
+    }
+    let posdy = [];
+    for (let n = 0; n <= transform.dy_input.value; n++) {
+        posdy.push(n);
+        posdy.push(-n);
+    }
+    let possx = [];
+    for (let n = 1; n <= transform.sxn_input.value; n++) {
+        for (let d = 1; d <= transform.sxd_input.value; d++) {
+            if (!possx.includes(n / d)) {
+                possx.push(n / d);
+                if (transform.fx_input.checked) {
+                    possx.push(-n / d)
+                }
+            }
+        }
+    }
+    let possy = [];
+    for (let n = 1; n <= transform.syn_input.value; n++) {
+        for (let d = 1; d <= transform.syd_input.value; d++) {
+            if (!possy.includes(n / d)) {
+                possy.push(n / d);
+                if (transform.fy_input.checked) {
+                    possy.push(-n / d)
+                }
+            }
+        }
+    }
+    
+    for (let f of posFuncFuncs) {
+        for (let dx of posdx) {
+            for (let sx of possx) {
+                let fVals = [f(sx * (dx + xVals[0])), f(sx * (dx + xVals[1])), f(sx * (dx + xVals[2]))];
+                if (sameValue((fVals[1] - fVals[0]) * (funcVals[2] - funcVals[1]), (fVals[2] - fVals[1]) * (funcVals[1] - funcVals[0]))) {
+                    for (let dy of posdy) {
+                        for (let sy of possy) {
+                            if (
+                                sameValue(funcVals[0], dy + sy * fVals[0]) && 
+                                sameValue(funcVals[1], dy + sy * fVals[1]) && 
+                                sameValue(funcVals[2], dy + sy * fVals[2]) && 
+                                sameFunc(func, (x) => dy + sy * f(sx * (dx + x)))
+                            ) {
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    return false;
+}
+
+function sameValue(n1, n2) {
+    if (isDefined(n1) && isDefined(n2)) {
+        return Math.abs(n1 - n2) < eps;
+    } else {
+        return !isDefined(n1) && !isDefined(n2);
+    }
+}
+
+function sameGraph(rawf1, rawf2) {
+    if (rawf1 == rawf2) {
+        return true;
+    }
+    let f1 = getFunc(rawf1);
+    let f2 = getFunc(rawf2);
+    for (let x = minX; x <= maxX; x += incZero) {
+        if (!sameValue(f1(x), f2(x))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function sameFunc(f1, f2) {
+    for (let x = minX; x <= maxX; x += incZero) {
+        if (!sameValue(f1(x), f2(x))) {
+            return false;
+        }
+    }
+    return true;
+}
+
+function setGuesses() {
+    let text = "";
+    switch (result) {
+        case true:
+            text = "Completed in " + boxNum + " guesses!";
+            break;
+        case false:
+            text = "Failed!";
+            break;
+        case undefined:
+            switch (boxNum) {
+                case 0:
+                    text += "Six";
+                    break;
+                case 1:
+                    text += "Five";
+                    break;
+                case 2:
+                    text += "Four";
+                    break;
+                case 3:
+                    text += "Three";
+                    break;
+                case 4:
+                    text += "Two";
+                    break;
+                case 5:
+                    text += "One";
+                    break;
+            }
+            switch (boxNum) {
+                case 5:
+                    text += " guess";
+                    break;
+                default:
+                    text += " guesses";
+            }
+            text += " remaining...";
+            break;
+    }
+    guesses.innerHTML = text;
+}
+
+
+document.onkeydown = function() {
+    let pboxNum = boxNum;
+    let prawTexts = [...rawTexts];
+    
+    if (info == "guesses" && result == undefined) {
+        switch (event.key) {
+            case "Enter":
+                if (validGraph(rawTexts[boxNum])) {
+                    boxNum += 1;
+                    if (sameGraph(rawTexts[boxNum - 1], rawAnswer)) {
+                        cursor = -1;
+                        result = true;
+                    } else {
+                        if (boxNum < totalBoxes - 1) {
+                            cursor = rawTexts[boxNum].length;
+                        } else {
+                            cursor = -1;
+                            result = false;
+                        }
+                    }
+                    showGraph(true);
+                    setGuesses();
+                    if (result != undefined) {
+                        play.style.display = "block";
+                        play.innerHTML = "Menu";
+                        showBox(totalBoxes - 1);
+                        for (let s of Object.values(infos)) {
+                            s.style.display = "none";
+                        }
+                    }
+                } else {
+                    showBox(boxNum);
+                    contexts[boxNum].fillStyle = "#ff00001f";
+                    contexts[boxNum].fillRect(0, 0, boxes[boxNum].width, boxes[boxNum].height);
+                    return;
+                }
+                break;
+            case "ArrowLeft":
+                cursor -= lastChar(rawTexts[boxNum], cursor).length;
+                break;
+            case "ArrowRight":
+                cursor += nextChar(rawTexts[boxNum], cursor).length;
+                break;
+            case "Backspace":
+                switch (lastChar(rawTexts[boxNum], cursor)) {
+                    case "\\)/\\(":
+                        let fOInd = findOpen(rawTexts[boxNum], cursor - 5);
+                        let fCInd = findClose(rawTexts[boxNum], cursor);
+                        rawTexts[boxNum] = rawTexts[boxNum].slice(0, fOInd - 2) + rawTexts[boxNum].slice(fOInd + 1, cursor - 5) + rawTexts[boxNum].slice(cursor, fCInd - 1) + rawTexts[boxNum].slice(fCInd + 1);
+                        cursor -= 8;
+                        break;
+                    case "\\/(":
+                        let cInd = findClose(rawTexts[boxNum], cursor);
+                        let cInd1 = findClose(rawTexts[boxNum], cInd + 5);
+                        rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor - 3) + rawTexts[boxNum].slice(cursor, cInd - 1) + rawTexts[boxNum].slice(cInd + 4, cInd1 - 1) + rawTexts[boxNum].slice(cInd1 + 1);
+                        cursor -= 3;
+                        break;
+                    case "\\^(":
+                        let cIndP = findClose(rawTexts[boxNum], cursor);
+                        rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor - 3) + rawTexts[boxNum].slice(cursor, cIndP - 1) + rawTexts[boxNum].slice(cIndP + 1);
+                        cursor -= 3;
+                        break;
+                    case "\\)":
+                        cursor -= 2;
+                        break;
+                    default:
+                        let charLength = lastChar(rawTexts[boxNum], cursor).length;
+                        rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor - charLength) + rawTexts[boxNum].slice(cursor);
+                        cursor -= charLength;
+                }
+                break;
+            case "^":
+                rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor) + "\\^(\\)" + rawTexts[boxNum].slice(cursor);
+                cursor += 3;
+                break;
+            case "/":
+                let bInd = lastBreak(rawTexts[boxNum], ["+", "-"], cursor) + 1;
+                rawTexts[boxNum] = rawTexts[boxNum].slice(0, bInd) + "\\/(" + rawTexts[boxNum].slice(bInd, cursor) + "\\)/\\(\\)" + rawTexts[boxNum].slice(cursor);
+                if (cursor == bInd) {
+                    cursor += 3;
+                } else {
+                    cursor += 8;
+                }
+                break;
+            case "i":
+                if (cursor > 0 && rawTexts[boxNum].at(cursor-1) == "p") {
+                    rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor-1) + "π" + rawTexts[boxNum].slice(cursor);
+                } else {
+                    rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor) + "i" + rawTexts[boxNum].slice(cursor);
+                    cursor += 1;
+                }
+                break;
+            default:
+                if (numbers.includes(event.key) || letters.includes(event.key) || symbols.includes(event.key)) {
+                    rawTexts[boxNum] = rawTexts[boxNum].slice(0, cursor) + event.key + rawTexts[boxNum].slice(cursor);
+                    cursor += 1;
+                }
+        }
+    
+        showBox(boxNum);
+        if (boxNum != pboxNum) {
+            showBox(pboxNum);
+        }
+    }
+}
+
+
+for (let n = 0; n < totalBoxes; n++) {
+    showBox(n);
+}
+showGraph(true);
+        </script>
+    </body>
+</html>
